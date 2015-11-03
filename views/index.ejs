@@ -1,0 +1,52 @@
+<html>
+<head>
+<title>Survey Form</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+  <script type ="text/javascript">
+  $(document).ready(function(){
+    var socket = io.connect();
+
+    $("#survey_form").submit(function(){
+      socket.emit("posting_form", {
+        name: $('#name').val(),
+        location: $('#location').val(),
+        language: $('#language').val(),
+        comment: $('#comment').val()
+      })
+      return false;
+    })
+
+    socket.on('updated_message', function(data){
+      $('#message').html("You emiited the following information to the server: " + JSON.stringify(data.response));
+    })
+    socket.on('random_number', function(data){
+        $('#message').append("<br>This is your lucky number: " + JSON.stringify(data.respone));
+    })
+  })
+
+
+
+
+  </script>
+</head>
+<body>
+  <div id="message"></div><hr>
+
+  <form action='' id='survey_form'>
+   Name: <input type='text' name='name' id='name'><br><br>
+   Dojo Location: <select name='location' id ='location'>
+                       <option name="">Mountain View</option>
+                       <option name="">Burbank</option>
+                       <option name="">Los Angeles</option>
+                     </select><br><br>
+   Favorite Language: <select name='language' id='language'>
+                       <option name="">PHP</option>
+                       <option name="">Javascript</option>
+                       <option name="">Ruby</option>
+                     </select><br><br>
+   Comment (optional): <textarea name="comment" id='comment'></textarea><br><br>
+   <input type='submit' value='Submit'>
+  </form>
+</body>
+</html><br>
